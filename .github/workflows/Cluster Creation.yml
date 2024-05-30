@@ -1,0 +1,92 @@
+name: creating cluster
+
+on:
+  push:
+    branches:
+      - nagashree-learning
+
+jobs:
+  setup-elasticsearch:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+
+    - name: Create Elasticsearch deployment
+      env:
+        ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTIC_CLOUD_API_KEY }}
+      run: |
+        curl -X POST https://api.elastic-cloud.com/api/v1/deployments \
+          -H "Authorization: ApiKey $ELASTIC_CLOUD_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{
+                "name": "github-actions-cluster",
+                "resources": {
+                  "elasticsearch": [
+                    {
+                      "region": "us-west-1",
+                      "plan": {
+                        "cluster_topology": [
+                          {
+                            "instance_configuration_id": "gcp.standard.1",
+                            "size": {
+                              "value": 1024,
+                              "resource": "memory"
+                            }
+                          }
+                        ]
+                      },
+                      "ref_id": "main-elasticsearch"
+                    }
+                  ]
+                }
+              }' | tee response.json
+
+        export DEPLOYMENT_ID=$(jq -r '.id' response.json)
+        echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
+
+    - name: Wait for Elasticsearch to be ready
+      env:
+        ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTIC_CLOUD_API_KEY }}
+        DEPLOYMENT_ID: ${{ env.DEPLOYMENT_ID }}
+      run: |
+        echo "Waiting for Elasticsearch to be ready..."
+        while true; do
+          status=$(curl -s -H "Authorization: ApiKey $ELASTIC_CLOUD_API_KEY" \
+                       "https://api.elastic-cloud.com/api/v1/deployments/$DEPLOYMENT_ID" | jq -r '.resources.elasticsearch[0].info.status')
+          if [ "$status" = "started" ]; then
+            break
+          fi
+          echo "Current status: $status"
+          sleep 30
+        done
+
+    - name: Get Elasticsearch endpoint and credentials
+      env:
+        ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTIC_CLOUD_API_KEY }}
+        DEPLOYMENT_ID: ${{ env.DEPLOYMENT_ID }}
+      run: |
+        endpoint=$(curl -s -H "Authorization: ApiKey $ELASTIC_CLOUD_API_KEY" \
+                       "https://api.elastic-cloud.com/api/v1/deployments/$DEPLOYMENT_ID" | jq -r '.resources.elasticsearch[0].info.metadata.service_url')
+        echo "ELASTICSEARCH_URL=$endpoint" >> $GITHUB_ENV
+        credentials=$(curl -s -H "Authorization: ApiKey $ELASTIC_CLOUD_API_KEY" \
+                           "https://api.elastic-cloud.com/api/v1/deployments/$DEPLOYMENT_ID" | jq -r '.resources.elasticsearch[0].credentials')
+        username=$(echo $credentials | jq -r '.username')
+        password=$(echo $credentials | jq -r '.password')
+        echo "ELASTICSEARCH_USERNAME=$username" >> $GITHUB_ENV
+        echo "ELASTICSEARCH_PASSWORD=$password" >> $GITHUB_ENV
+
+    - name: Run Python tests
+      env:
+        ELASTICSEARCH_URL: ${{ env.ELASTICSEARCH_URL }}
+        ELASTICSEARCH_USERNAME: ${{ env.ELASTICSEARCH_USERNAME }}
+        ELASTICSEARCH_PASSWORD: ${{ env.ELASTICSEARCH_PASSWORD }}
+      run: |
+        pytest

@@ -16,7 +16,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 		
-	- uses: actions/checkout@v3
+	  - uses: actions/checkout@v3
     - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
@@ -31,13 +31,13 @@ jobs:
       env:
         ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTICLOUD_API_KEY }}
       run: |
-        python clustercreation.py
+        python beginner/clustercreation.py
 
     - name: Wait for Elasticsearch to be ready
       env:
         ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTICLOUD_API_KEY }}
       run: |
-        python deploymentstatus.py
+        python beginner/deploymentstatus.py
 
     - name: Run Python tests
       env:

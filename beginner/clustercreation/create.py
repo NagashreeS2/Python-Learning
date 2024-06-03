@@ -26,7 +26,7 @@ deployment_config = {
                         }
                     ],
                     "elasticsearch": {
-                        "version": "7.10.1"
+                        "version": "8.13.0"
                     }
                 }
             }

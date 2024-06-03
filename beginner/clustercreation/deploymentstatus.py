@@ -3,7 +3,7 @@ import os
 import time
 import json
 
-API_KEY = os.getenv('ELASTIC_CLOUD_API_KEY')
+API_KEY = os.getenv('ELASTICCLOUD_API_KEY')
 HEADERS = {
     'Authorization': f'ApiKey {API_KEY}',
     'Content-Type': 'application/json'

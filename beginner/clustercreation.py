@@ -2,7 +2,7 @@ import requests
 import os
 import json
 
-API_KEY = os.getenv('ELASTIC_CLOUD_API_KEY')
+API_KEY = os.getenv('ELASTICLOUD_API_KEY')
 HEADERS = {
     'Authorization': f'ApiKey {API_KEY}',
     'Content-Type': 'application/json'
@@ -10,7 +10,7 @@ HEADERS = {
 
 # Deployment configuration
 deployment_config = {
-    "name": "github-actions-cluster",
+    "name": "Deployment01",
     "resources": {
         "elasticsearch": [
             {

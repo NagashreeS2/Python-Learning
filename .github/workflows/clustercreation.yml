@@ -28,10 +28,10 @@ jobs:
 
     - name: Create Elasticsearch deployment
       env:
-        ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTIC_CLOUD_API_KEY }}
+        ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTICLOUD_API_KEY }}
       run: python beginner/clustercreation/create.py
 	
     - name: Wait for Elasticsearch to be ready
       env:
-        ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTIC_CLOUD_API_KEY }}
+        ELASTIC_CLOUD_API_KEY: ${{ secrets.ELASTICLOUD_API_KEY }}
       run: python beginner/clustercreation/deploymentstatus.py

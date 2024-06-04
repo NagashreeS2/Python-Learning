@@ -26,11 +26,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Create Elasticsearch deployment
+    - name: Create Cluster
       env:
         ELASTICLOUD_API_KEY: ${{ secrets.ELASTICLOUD_API_KEY }}
-      run: python beginner/clustercreation/create.py	
-    - name: Wait for Elasticsearch to be ready
-      env:
-        ELASTICLOUD_API_KEY: ${{ secrets.ELASTICLOUD_API_KEY }}
-      run: python beginner/clustercreation/deploymentstatus.py
+        ELASTICLOUD_API_ENDPOINT: ${{ secrets.ELASTICLOUD_API_ENDPOINT }}
+      run: python beginner/clustercreation/create.py

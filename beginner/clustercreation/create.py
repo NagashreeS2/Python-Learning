@@ -8,7 +8,7 @@ def create_cluster():
     elasticloud_api_key = os.getenv("ELASTICLOUD_API_KEY")
 
     # Define the Elasticsearch cluster configuration
-    cluster_config = {
+    cluster_config : {
         {
             "resources": {
               "elasticsearch": [

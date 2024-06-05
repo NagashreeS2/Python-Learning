@@ -8,7 +8,6 @@ def create_cluster():
     elasticloud_api_key = os.getenv("ELASTICLOUD_API_KEY")
 
     # Define the Elasticsearch cluster configuration
-    cluster_config : {
         {
             "resources": {
               "elasticsearch": [
@@ -169,7 +168,6 @@ def create_cluster():
           },
           "name": "my-first-api-deployment"
         }
-    }
 
     # Send a request to create the cluster
     response = requests.post(elasticloud_api_endpoint + "/api/v1/deployments", 

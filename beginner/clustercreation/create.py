@@ -171,8 +171,8 @@ def create_cluster():
 
 
     # Send a request to create the cluster
-    response = requests.post(elasticloud_api_endpoint + "/api/v1/deployments",
-                             headers={"Authorization": f"ApiKey {elasticloud_api_key}"},
+    response = requests.post(ELASTICLOUD_API_ENDPOINT + "/api/v1/deployments",
+                             headers={"Authorization": f"ApiKey {ELASTICLOUD_API_KEY}"},
                              json=cluster_config)
 
     # Print the response

@@ -6,6 +6,9 @@ import os
 # Disable SSL certificate verification
 #urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+elasticloud_api_endpoint = os.getenv('ELASTICLOUD_API_ENDPOINT')
+elasticloud_api_key = os.getenv('ELASTICLOUD_API_KEY')
+
 def create_cluster():
     # Define the Elasticsearch cluster configuration
     cluster_config = {
@@ -171,8 +174,8 @@ def create_cluster():
 
 
     # Send a request to create the cluster
-    response = requests.post(ELASTICLOUD_API_ENDPOINT + "/api/v1/deployments",
-                             headers={"Authorization": f"ApiKey {ELASTICLOUD_API_KEY}"},
+    response = requests.post(elasticloud_api_endpoint + "/api/v1/deployments",
+                             headers={"Authorization": f"ApiKey {elasticloud_api_key}"},
                              json=cluster_config)
 
     # Print the response

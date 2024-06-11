@@ -1,4 +1,4 @@
-name: Setup Elasticsearch Cluster on Elastic Cloud and Run Python Tests
+name: Setup Elasticsearch Cluster on Elastic Cloud 
 
 on:
   push:
